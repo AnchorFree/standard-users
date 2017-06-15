@@ -1,0 +1,44 @@
+FROM %IMAGE%
+
+COPY . /
+
+# Generate some metadata
+RUN wc -l /etc/passwd | awk '{print $1}' > /start_user_count.txt \
+ && wc -l /users.txt | awk '{print $1}' > /expected_new_user_count.txt
+
+# TODO: test fail when user already present with wrong uid
+
+# TODO: test fail when group already present with wrong gid
+
+# TODO: test create single user
+
+# TODO: test fail when creating unknown user
+
+# test create rest of users
+RUN unset TEST_RESULT \
+ && { \
+        /main.sh > /created_users.txt && \
+        TEST_RESULT="PASSED"; \
+    } \
+ && [ "$TEST_RESULT" = "PASSED" ] \
+ && [ "$(cat /expected_new_user_count.txt)" = "$(grep -cF 'adding user' /created_users.txt)" ]
+
+
+# test no-fail when users already created
+RUN unset TEST_RESULT \
+ && { \
+        /main.sh > /already_created_users.txt && \
+        TEST_RESULT="PASSED"; \
+    } \
+ && [ "$TEST_RESULT" = "PASSED" ] \
+ && [ 0 = "$(grep -c '^User [^ ]+ already exists' /already_created_users.txt)" ]
+
+
+
+#test 2. fail to create an nonexistence user
+#RUN unset TEST_RESULT && \
+#    { /main.sh "nonexistence" || TEST_RESULT="PASSED"; } && \
+#    [ "$TEST_RESULT" = "PASSED" ] && id -u nonexistence >/dev/null 2>&1 || [ "$?" -ne "0" ]
+
+#test 3. hydra user
+#RUN /usr/local/bin/add-user-with-group hydra && [ "$(id -u hydra)" -eq "10000" ] && [ "$(id -g hydra)" -eq "10000" ]
