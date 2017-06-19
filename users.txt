@@ -1,4 +1,4 @@
-catdaemon 1001
-hyrda 1002
-mysql 1003
-policyd 1004
+catdaemon 10001
+hyrda 10002
+mysql 10003
+policyd 10004
