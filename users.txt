@@ -1,3 +1,4 @@
+sniproxy 10000
 catdaemon 10001
 hydra 10002
 mysql 10003
