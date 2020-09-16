@@ -1,3 +1,4 @@
+session-manager 9999
 sniproxy 10000
 catdaemon 10001
 hydra 10002
